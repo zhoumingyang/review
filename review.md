@@ -40,12 +40,14 @@
 11. vue里面的computed和watch有什么区别
 12. vue中的effect是什么？如何实现一个简单的响应式系统
 13. watch里的immediate方法
-14. Vue router的常用模式有哪些，有什么区别，及实现原理
+14. Vue router的常用模式有哪些，有什么区别，它们的实现原理
 15. 动态路由传参有哪些方式
-16. 路由守卫里三个入参，from，to，next，说一下
+16. 路由守卫里三个入参，from，to，next
 17. nextTick的作用
 18. 如何实现v-for
-19. 常用vue指令
+19. 常用的vue指令
+20. 自定义指令实现
+21. 虚拟DOM和Diff算法
 
 ## 五、React 框架相关
 详见：[React 相关](./kpoint/react.md)

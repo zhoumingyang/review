@@ -233,6 +233,46 @@ persist: {
 ---
 
 ## 10. Vuex和pinia解决什么问题？如果不用它们，该如何解决
+### 10.1 解决什么问题？
+1. 多个组件间共享状态变得困难
+- 用户登录信息、购物车数量、权限列表等
+- 页面 A 修改了数据，页面 B 需要感知
+- 兄弟组件之间传值困难，不能靠 props/emit
+2. 组件状态**“提不动”**了
+- 有些状态需要提升到 App 根组件甚至外部文件
+3. 状态逻辑需要更规范
+- 状态、修改方法分离（避免混乱）
+- 可预测、可调试（例如 Vuex 的 time travel debugging）
+### 10.2 替换方案
+- props / emits
+  - 适用于父子组件通信（单层级）
+  - 缺点：跨层级麻烦、容易“传着传着就乱了”
+- eventBus
+  - 优点：轻量快速
+  - 缺点：缺乏状态，调试困难，事件丢失无状态记录
+- provide / inject
+  - 适合树状结构中的祖孙通信
+  - 可手动传递 store-like 对象
+- 组合式 API 自建 Store
+  - 缺点：你需要手动处理状态持久化、模块划分、DevTools 等功能
+```js
+// userStore.js
+import { reactive } from 'vue'
+
+const state = reactive({
+  token: '',
+  userInfo: {}
+})
+
+export function useUserStore() {
+  return {
+    state,
+    setToken(token) {
+      state.token = token
+    }
+  }
+}
+```
 
 ---
 
@@ -261,3 +301,223 @@ persist: {
  - 模板渲染更新，renderEffect，依赖变化自动更新 UI
  - 响应式组件状态更新
 ### 12.2 [实现一个mini响应式系统](./js/miniReactive.js)
+
+---
+
+## 13. watch里的immediate方法
+- watch默认绑定，页面首次加载时，是不会执行的。只有值发生改变才会执行，如果想立即执行，则设置immediate为true
+
+---
+
+## 14. Vue router的常用模式有哪些，有什么区别，它们的实现原理
+### 14.1 常用模式
+1. Hash模式
+- URL 格式：http://example.com/#/path
+- 特点：
+  -  使用 URL 的 hash（#）来模拟完整的 URL
+  -  改变 hash 不会重新加载页面
+  -  兼容性好，支持所有浏览器（包括 IE9 及以下）
+  -  每一次改变hash（window.location.hash），都会在浏览器的访问历史中增加一个记录
+2. History模式
+- URL 格式：http://example.com/path
+- 特点：
+  - 利用 HTML5 History API（pushState、replaceState 和 popstate 事件）
+  - URL 看起来更自然，没有 #
+  - 需要服务器端支持，否则刷新页面会出现 404
+3. Abstract 模式
+- 使用场景：
+  - 非浏览器环境（如 Node.js、Electron、NativeScript 等）
+  - 不依赖浏览器的 API
+- 特点
+  - 在所有环境下都能工作
+  - 路由信息保存在内存中
+4. 区别
+| 路由模式          | URL 示例                      | 是否刷新页面 | 依赖后端配置 | 原理                   |
+| ------------- | --------------------------- | ------ | ------ | -------------------- |
+| `hash` 模式     | `http://example.com/#/home` | ❌ 否    | ❌ 否    | 基于 URL hash (`#`) 实现 |
+| `history` 模式  | `http://example.com/home`   | ❌ 否    | ✅ 是    | HTML5 History API    |
+| `abstract` 模式 | 无 URL（用于 SSR 或 Node）        | ❌ 否    | ❌ 否    | 内存模拟                 |
+
+### [14.2 原理](./js/miniRoute.js)
+1. Hash模式
+- 通过改变location.hash( 注：只改变url的hash值而不是url的主体部分，顾不会刷新页面、不会发送http请求)，然后由浏览器监听事件onhashchange事件来监听hash值的变化并触发绑定的回调函数，从而来展示不同的页面内容
+1. history模式
+- 通过history interface 新增的pushState、replaceState方法以及现有的go、back、forward方法来改变url（注：可以改变url的主体部分,顾在直接访问嵌套路由时，必须配有该路径所对应的资源否则会出现404的情况，但可以通过vue的redirect重定向到index页面或者404页面，来解决此问题）,然后通过window.popState事件 来监听url变化并执行对应的回调函数，从而来展示不同的页面内容
+
+## 15. 动态路由传参有哪些方式
+1. 基于路径的参数
+- 形式
+```js
+// 定义路由
+{
+  path: '/user/:id',
+  component: User
+}
+```
+- 访问方式
+```js
+this.$route.params.id
+```
+- 配合 router-link
+```html
+<router-link :to="`/user/${userId}`">用户详情</router-link>
+```
+2. 基于查询字符串参数
+- 形式：路径保持静态，通过 ?key=value 方式传参
+```js
+// 定义路由
+{
+  path: '/search',
+  component: Search
+}
+```
+- 访问方式
+```js
+/search?keyword=vue&page=2
+this.$route.query.keyword  // → "vue"
+this.$route.query.page     // → "2"
+```
+- 配合 router-link
+```html
+<router-link :to="{ path: '/search', query: { keyword: 'vue', page: 2 }}">搜索</router-link>
+```
+3. props配置（解耦参数 & 组件）
+- 用法1：props: true（仅支持 params
+```js
+{
+  path: '/user/:id',
+  component: User,
+  props: true
+}
+```
+- 用法2：props: route => ({ ... })（支持 query 或复杂转换）
+```js
+{
+  path: '/search',
+  component: Search,
+  props: route => ({ keyword: route.query.keyword })
+}
+```
+### 对比  
+| 方式   | 参数获取方式         | URL表现形式               | 刷新/分享支持 | 适用场景             |
+|--------|---------------------|---------------------------|---------------|----------------------|
+| params | this.$route.params  | /user/123                 | 支持          | 必须参数、层级结构    |
+| query  | this.$route.query   | /user?id=123              | 支持          | 可选参数、筛选条件    |
+| props  | 组件 props 接收     | /user/123 或 /user?id=123 | 支持          | 组件解耦             |
+| meta   | this.$route.meta    | 不体现在 URL              | 不支持        | 权限、描述等附加信息  |
+
+---
+
+## 16. 路由守卫里的3个参数：from、to、next
+```js
+router.beforeEach((to, from, next) => {
+  // ...
+})
+```
+- to —— 即将要进入的路由对象，包含你将要导航到的目标路由信息，如路径、参数、组件等。
+- from —— 当前导航正要离开的路由对象。
+- next() —— 控制导航是否允许进行，必须调用 next() 才会进入下一个钩子或跳转到目标路由。
+### next使用方式
+| 用法                         | 含义                |
+| -------------------------- | ----------------- |
+| `next()`                   | ✅ 允许跳转            |
+| `next(false)`              | ❌ 中断导航，停留在当前页面    |
+| `next('/login')`           | 👉 重定向到指定路径       |
+| `next({ path: '/login' })` | 👉 重定向到指定路径（对象形式） |
+
+---
+
+## 17. nextTick的作用
+- 当你更改了响应式数据，Vue 会异步地更新 DOM。如果你需要在 DOM 更新完成后立即执行某些操作（比如读取或操作 DOM 元素），就需要用 nextTick。
+- Vue 内部采用了微任务队列（如 Promise.then()）来实现
+```js
+function nextTick(cb) {
+  Promise.resolve().then(cb)
+}
+```
+---
+
+## 18. 如何实现v-for
+### 18.1 底层实现原理
+- Vue 会在编译阶段将 v-for 编译成 循环渲染函数（renderList），并追踪每项的 key 以便高效复用 DOM 节点。
+
+---
+
+## 19. 常用的vue指令
+| 指令名         | 作用                 | 示例                                                             |
+| ----------- | ------------------ | -------------------------------------------------------------- |
+| `v-bind`    | 动态绑定属性或 prop       | `:href="url"` 等价于 `v-bind:href="url"`                          |
+| `v-model`   | 双向绑定表单元素           | `<input v-model="text" />`                                     |
+| `v-if`      | 条件渲染（不渲染则移除）       | `<div v-if="show">A</div>`                                     |
+| `v-else-if` | 条件渲染的 else if 分支   | `<div v-else-if="other">B</div>`                               |
+| `v-else`    | 条件渲染的 else 分支      | `<div v-else>C</div>`                                          |
+| `v-show`    | 条件展示（控制 `display`） | `<div v-show="isVisible">D</div>`                              |
+| `v-for`     | 列表渲染               | `<li v-for="item in list" :key="item.id">{{ item.name }}</li>` |
+| `v-on`      | 监听事件               | `@click="handle"` 等价于 `v-on:click="handle"`                    |
+| `v-slot`    | 插槽分发（插槽具名/作用域）     | `<template v-slot:header>`                                     |
+| `v-pre`     | 跳过当前元素的编译          | `<div v-pre>{{ raw }}</div>`                                   |
+| `v-cloak`   | 防止模板闪现             | `<div v-cloak>待编译内容</div>`                                     |
+| `v-once`    | 只渲染一次，后续不再更新       | `<div v-once>{{ text }}</div>`                                 |
+
+
+## 20. 自定义指令实现
+```js
+// Vue 3 全局注册
+const app = createApp(App)
+
+app.directive('focus', {
+  mounted(el) {
+    el.focus()
+  }
+})
+```
+
+```js
+app.directive('color', {
+  mounted(el, binding) {
+    el.style.color = binding.value
+  }
+})
+```
+
+```js
+app.directive('draggable', {
+  mounted(el) {
+    el.style.position = 'absolute'
+    el.style.cursor = 'move'
+
+    el.onmousedown = e => {
+      const disX = e.clientX - el.offsetLeft
+      const disY = e.clientY - el.offsetTop
+
+      document.onmousemove = moveEvent => {
+        el.style.left = moveEvent.clientX - disX + 'px'
+        el.style.top = moveEvent.clientY - disY + 'px'
+      }
+
+      document.onmouseup = () => {
+        document.onmousemove = null
+        document.onmouseup = null
+      }
+    }
+  },
+  unmounted(el) {
+    el.onmousedown = null
+  }
+})
+```
+
+---
+
+## 21. [虚拟DOM和Diff算法](https://juejin.cn/post/7010594233253888013)
+### 21.1 虚拟DOM
+- 虚拟 DOM 简单说就是 用JS对象来模拟 DOM 结构
+```js
+{
+  tag:'div',
+  props:{ id:'app', class:'container' },
+  children: [
+    { tag: 'h1', children:'沐华' }
+  ]
+}
+```
