@@ -332,11 +332,11 @@ export function useUserStore() {
   - 在所有环境下都能工作
   - 路由信息保存在内存中
 4. 区别
-| 路由模式          | URL 示例                      | 是否刷新页面 | 依赖后端配置 | 原理                   |
-| ------------- | --------------------------- | ------ | ------ | -------------------- |
-| `hash` 模式     | `http://example.com/#/home` | ❌ 否    | ❌ 否    | 基于 URL hash (`#`) 实现 |
-| `history` 模式  | `http://example.com/home`   | ❌ 否    | ✅ 是    | HTML5 History API    |
-| `abstract` 模式 | 无 URL（用于 SSR 或 Node）        | ❌ 否    | ❌ 否    | 内存模拟                 |
+| 路由模式        | URL 示例                    | 是否刷新页面 | 依赖后端配置 | 原理                     |
+| --------------- | --------------------------- | ------------ | ------------ | ------------------------ |
+| `hash` 模式     | `http://example.com/#/home` | ❌ 否         | ❌ 否         | 基于 URL hash (`#`) 实现 |
+| `history` 模式  | `http://example.com/home`   | ❌ 否         | ✅ 是         | HTML5 History API        |
+| `abstract` 模式 | 无 URL（用于 SSR 或 Node）  | ❌ 否         | ❌ 否         | 内存模拟                 |
 
 ### [14.2 原理](./js/miniRoute.js)
 1. Hash模式
@@ -399,12 +399,12 @@ this.$route.query.page     // → "2"
 }
 ```
 ### 对比  
-| 方式   | 参数获取方式         | URL表现形式               | 刷新/分享支持 | 适用场景             |
-|--------|---------------------|---------------------------|---------------|----------------------|
-| params | this.$route.params  | /user/123                 | 支持          | 必须参数、层级结构    |
-| query  | this.$route.query   | /user?id=123              | 支持          | 可选参数、筛选条件    |
-| props  | 组件 props 接收     | /user/123 或 /user?id=123 | 支持          | 组件解耦             |
-| meta   | this.$route.meta    | 不体现在 URL              | 不支持        | 权限、描述等附加信息  |
+| 方式   | 参数获取方式       | URL表现形式               | 刷新/分享支持 | 适用场景             |
+| ------ | ------------------ | ------------------------- | ------------- | -------------------- |
+| params | this.$route.params | /user/123                 | 支持          | 必须参数、层级结构   |
+| query  | this.$route.query  | /user?id=123              | 支持          | 可选参数、筛选条件   |
+| props  | 组件 props 接收    | /user/123 或 /user?id=123 | 支持          | 组件解耦             |
+| meta   | this.$route.meta   | 不体现在 URL              | 不支持        | 权限、描述等附加信息 |
 
 ---
 
@@ -418,11 +418,11 @@ router.beforeEach((to, from, next) => {
 - from —— 当前导航正要离开的路由对象。
 - next() —— 控制导航是否允许进行，必须调用 next() 才会进入下一个钩子或跳转到目标路由。
 ### next使用方式
-| 用法                         | 含义                |
-| -------------------------- | ----------------- |
-| `next()`                   | ✅ 允许跳转            |
-| `next(false)`              | ❌ 中断导航，停留在当前页面    |
-| `next('/login')`           | 👉 重定向到指定路径       |
+| 用法                       | 含义                           |
+| -------------------------- | ------------------------------ |
+| `next()`                   | ✅ 允许跳转                     |
+| `next(false)`              | ❌ 中断导航，停留在当前页面     |
+| `next('/login')`           | 👉 重定向到指定路径             |
 | `next({ path: '/login' })` | 👉 重定向到指定路径（对象形式） |
 
 ---
@@ -444,20 +444,20 @@ function nextTick(cb) {
 ---
 
 ## 19. 常用的vue指令
-| 指令名         | 作用                 | 示例                                                             |
-| ----------- | ------------------ | -------------------------------------------------------------- |
-| `v-bind`    | 动态绑定属性或 prop       | `:href="url"` 等价于 `v-bind:href="url"`                          |
-| `v-model`   | 双向绑定表单元素           | `<input v-model="text" />`                                     |
-| `v-if`      | 条件渲染（不渲染则移除）       | `<div v-if="show">A</div>`                                     |
-| `v-else-if` | 条件渲染的 else if 分支   | `<div v-else-if="other">B</div>`                               |
-| `v-else`    | 条件渲染的 else 分支      | `<div v-else>C</div>`                                          |
-| `v-show`    | 条件展示（控制 `display`） | `<div v-show="isVisible">D</div>`                              |
-| `v-for`     | 列表渲染               | `<li v-for="item in list" :key="item.id">{{ item.name }}</li>` |
-| `v-on`      | 监听事件               | `@click="handle"` 等价于 `v-on:click="handle"`                    |
-| `v-slot`    | 插槽分发（插槽具名/作用域）     | `<template v-slot:header>`                                     |
+| 指令名      | 作用                        | 示例                                                           |
+| ----------- | --------------------------- | -------------------------------------------------------------- |
+| `v-bind`    | 动态绑定属性或 prop         | `:href="url"` 等价于 `v-bind:href="url"`                       |
+| `v-model`   | 双向绑定表单元素            | `<input v-model="text" />`                                     |
+| `v-if`      | 条件渲染（不渲染则移除）    | `<div v-if="show">A</div>`                                     |
+| `v-else-if` | 条件渲染的 else if 分支     | `<div v-else-if="other">B</div>`                               |
+| `v-else`    | 条件渲染的 else 分支        | `<div v-else>C</div>`                                          |
+| `v-show`    | 条件展示（控制 `display`）  | `<div v-show="isVisible">D</div>`                              |
+| `v-for`     | 列表渲染                    | `<li v-for="item in list" :key="item.id">{{ item.name }}</li>` |
+| `v-on`      | 监听事件                    | `@click="handle"` 等价于 `v-on:click="handle"`                 |
+| `v-slot`    | 插槽分发（插槽具名/作用域） | `<template v-slot:header>`                                     |
 | `v-pre`     | 跳过当前元素的编译          | `<div v-pre>{{ raw }}</div>`                                   |
-| `v-cloak`   | 防止模板闪现             | `<div v-cloak>待编译内容</div>`                                     |
-| `v-once`    | 只渲染一次，后续不再更新       | `<div v-once>{{ text }}</div>`                                 |
+| `v-cloak`   | 防止模板闪现                | `<div v-cloak>待编译内容</div>`                                |
+| `v-once`    | 只渲染一次，后续不再更新    | `<div v-once>{{ text }}</div>`                                 |
 
 
 ## 20. 自定义指令实现
@@ -521,3 +521,153 @@ app.directive('draggable', {
   ]
 }
 ```
+- **tag**：必选。是标签,也可以是组件，或者函数
+- **props**：非必选。就是这个标签上的属性和方法（id、class等）
+- **children**：非必选。标签的内容或者子节点，如果是文本节点就是字符串，如果有子节点就是数组
+### 21.2 为什么要使用虚拟DOM
+原生 DOM 有非常多的属性和事件，就算是创建一个空div也要付出不小的代价。而使用虚拟 DOM 来提升性能的点在于 DOM 发生变化的时候，通过 diff 算法和数据改变前的 DOM 对比，计算出需要更改的 DOM，然后只对变化的 DOM 进行操作，而不是更新整个视图。
+### 21.3 diff算法
+- 概念： diff算法在vue里叫做**patch**，通过新旧虚拟 DOM 对比，找出最小变化的地方转为进行 DOM 操作  
+- 首次渲染： 在页面**首次渲染**的时候会调用一次 patch 并创建新的 vnode，不会进行更深层次的比较。  
+- 数据变化： 在组件中**数据发生变化**时，会触发 setter 然后通过 Notify 通知 Watcher，对应的 Watcher 会通知更新并执行更新函数，它会执行 render 函数获取新的虚拟 DOM，然后执行 patch 对比上次渲染结果的老的虚拟 DOM，并计算出最小的变化，然后再去根据这个最小的变化去更新真实的 DOM
+#### diff算法优化
+1. 只比较同一层级，不跨级比较。diff 过程只会把vnode树同一层级的 DOM 进行比较
+2. 比较标签名。同一层级的同一位置的标签名不同，就直接移除老的虚拟 DOM 对应的节点，不继续按这个树状结构做深度比较
+3. 比较key。标签名相同，key 也相同，就会认为是相同节点，也不继续按这个树状结构做深度比较
+4. key的作用：
+  - 为高效更新虚拟DOM，它可以非常精确的找到相同节点，因此 patch 过程会非常高效
+  - vue 在 patch 过程中会判断两个节点是不是相同节点时，key 是一个必要条件
+  - Vue 判断两个节点是否相同时主要判断两者的元素类型和 key 等，如果不设置 key，就可能永远认为这两个是相同节点，只能去做更新操作，就造成大量不必要的 DOM 更新操作
+#### vue2源码解析
+```js
+// 判读vnode是否相同
+function sameVnode (a, b) {
+  return (
+    a.key === b.key &&  // key 是不是一样
+    a.asyncFactory === b.asyncFactory && ( // 是不是异步组件
+      (
+        a.tag === b.tag && // 标签是不是一样
+        a.isComment === b.isComment && // 是不是注释节点
+        isDef(a.data) === isDef(b.data) && // 内容数据是不是一样
+        sameInputType(a, b) // 判断 input 的 type 是不是一样
+      ) || (
+        isTrue(a.isAsyncPlaceholder) && // 判断区分异步组件的占位符否存在
+        isUndef(b.asyncFactory.error)
+      )
+    )
+  )
+}
+```
+#### vue3 diff的优化
+- 事件缓存：将事件缓存，可以理解为变成静态的了
+- 添加静态标记：Vue2 是全量 Diff，Vue3 是静态标记 + 非全量 Diff
+- 静态提升：创建静态节点时保存，后续直接复用
+- 使用最长递增子序列优化了对比流程：Vue2 里在 updateChildren() 函数里对比变更，在 Vue3 里这一块的逻辑主要在 patchKeyedChildren() 函数里
+1. 事件缓存
+```js
+<button @click="handleClick">按钮</button>
+```
+编译后
+```js
+export function render(_ctx, _cache, $props, $setup, $data, $options) {
+  return (_openBlock(), _createElementBlock("button", {
+    onClick: _cache[0] || (_cache[0] = (...args) => (_ctx.handleClick && _ctx.handleClick(...args)))
+  }, "按钮"))
+}
+```
+onClick 会先读取缓存，如果缓存没有的话，就把传入的事件存到缓存里，可以理解为变成静态节点了
+2. 静态标记
+```js
+export const enum PatchFlags {
+  TEXT = 1 ,  // 动态文本节点
+  CLASS = 1 << 1,  // 2   动态class
+  STYLE = 1 << 2,  // 4   动态style
+  PROPS = 1 << 3,  // 8   除去class/style以外的动态属性
+  FULL_PROPS = 1 << 4,       // 16  有动态key属性的节点，当key改变时，需进行完整的diff比较
+  HYDRATE_EVENTS = 1 << 5,   // 32  有监听事件的节点
+  STABLE_FRAGMENT = 1 << 6,  // 64  一个不会改变子节点顺序的fragment (一个组件内多个根元素就会用fragment包裹)
+  KEYED_FRAGMENT = 1 << 7,   // 128 带有key属性的fragment或部分子节点有key
+  UNKEYEN_FRAGMENT = 1 << 8, // 256  子节点没有key的fragment
+  NEED_PATCH = 1 << 9,       // 512  一个节点只会进行非props比较
+  DYNAMIC_SLOTS = 1 << 10,   // 1024   动态slot
+  HOISTED = -1,  // 静态节点 
+  BAIL = -2      // 表示 Diff 过程中不需要优化
+}
+```
+```js
+<div id="app">
+    <div>沐华</div>
+    <p>{{ age }}</p>
+</div>
+```
+编译后
+```js
+const _hoisted_1 = { id: "app" }
+const _hoisted_2 = /*#__PURE__*/_createElementVNode("div", null, "沐华", -1 /* HOISTED */)
+
+export function render(_ctx, _cache, $props, $setup, $data, $options) {
+  return (_openBlock(), _createElementBlock("div", _hoisted_1, [
+    _hoisted_2,
+    _createElementVNode("p", null, _toDisplayString(_ctx.age), 1 /* TEXT */)
+  ]))
+}
+```
+其中-1就是静态节点，1则为动态文本节点，patch过程会跳过静态节点
+3. 静态提升
+Vue3 中会把这个不参与更新的元素保存起来，只创建一次，之后在每次渲染的时候不停地复用，例如_hoisted_2仅创建一次，之后仅复用
+4. vue3中的patchkeyedChildren
+- 头和头比较
+- 尾和尾比较
+- 基于最长递增子序列进行移动/添加/删除
+- 例如：
+  -  老的 children：[ a, b, c, d, e, f, g ]
+  -  新的 children：[ a, b, f, c, d, e, h, g ]
+  -  先进行头和头比，发现不同就结束循环，得到 [ a, b ]
+  -  再进行尾和尾比，发现不同就结束循环，得到 [ g ]
+  -  再保存没有比较过的节点 [ f, c, d, e, h ]，并通过 newIndexToOldIndexMap 拿到在数组里对应的下标，生成数组 [ 5, 2, 3, 4, -1 ]，-1 是老数组里没有的就说明是新增
+  -  然后再拿取出数组里的最长递增子序列，也就是 [ 2, 3, 4 ] 对应的节点 [ c, d, e ]
+  -  然后只需要把其他剩余的节点，基于 [ c, d, e ] 的位置进行移动/新增/删除就可以
+  -  在新的顺序中，最长递增子序列表示：这些节点在旧 DOM 中的位置是顺序递增的，因此它们无需移动，其余节点则需要“插入”或“移动”，这样可以最小化 DOM 操作次数
+
+--- 
+
+## 21. vue为何要采用异步渲染
+Vue在更新DOM时是异步执行的，只要侦听到数据变化，Vue将开启一个队列，并缓冲在同一事件循环中发生的所有数据变更，如果同一个watcher被多次触发，只会被推入到队列中一次，这种在缓冲时去除重复数据对于避免不必要的计算和DOM操作是非常重要的，然后，在下一个的事件循环tick中，Vue刷新队列并执行实际(已去重的)工作，Vue在内部对异步队列尝试使用原生的Promise.then、MutationObserver和setImmediate，如果执行环境不支持，则会采用setTimeout(fn, 0)代替  
+Vue采用异步渲染（也称为异步更新 / 异步 DOM 更新），主要是为了性能优化和避免重复渲染。这个设计背后的核心思想是：批量合并多次数据变更，只执行一次 DOM 更新  
+### 提高性能，减少 DOM 操作次数
+- DOM 是性能瓶颈。多次修改数据会导致多次 render → patch → DOM，若同步执行，性能极差
+- Vue 会把多次数据变更收集起来，然后在 同一个事件循环的“下一个微任务”中统一执行更新，从而避免频繁地触发 DOM 更新
+- 避免重复渲染，防止状态抖动。同步渲染可能在某些场景下造成“前一帧刚更新完，又被下一次覆盖”，最终渲染是无意义的，但资源已浪费。异步队列策略避免了这种“状态抖动
+- 保持视图与数据一致性。Vue 保证一个“tick”内数据变更只会更新一次视图，避免中间态显示，从而提升一致性体验
+### Vue 的异步渲染过程
+- 响应式数据变化时，触发 watcher.update()，将当前组件的更新任务 加入异步更新队列（queue
+- Vue 内部通过 nextTick() 把 DOM 更新任务放到 微任务队列中
+- 等当前同步代码执行完后，统一执行队列里的 patch 操作
+
+---
+
+## 22. [vue3的调度系统](https://juejin.cn/post/7055848604933554207)
+vue利用调度算法，保证 Vue 组件渲染过程的正确性以及 API 的执行顺序的正确性
+1. vue调度算法使用了3个队列
+- 组件DOM更新前队列（pre队列），执行组件 DOM 更新之前的任务，先进先出，queuePreFlushCb，执行watch的回调函数
+- 组件DOM更新队列（组件异步更新队列），执行组件 DOM 更新，允许插队，按 id 从小到大执行，queueJob，执行组件DOM更新
+- 组件DOM更新后队列（post队列），执行组件 DOM 更新之后的任务，允许插队，按 id 从小到大执行，queuePostFlushCb，执行update的回调函数
+- 队列会在当前浏览器任务的所有 js 代码执行完成后,才开始依次执行 Pre 队列、queue 列、Post 队列
+2. 组件的DOM更新
+- 实际上是调用 instance.update 函数，该函数会对比组件 data 更新前的 VNode 和组件 data 更新后的 VNode，对比之间的差异，修改差异部分的 DOM。该过程叫 **patch**，比较 vnode 的方法叫 **diff 算法**
+- instance 是指 Vue 内部的组件实例
+- instance.update是深度更新，即除了会更新组件本身，还会递归调用子组件的 instance.update ，因此，这个过程会更新整个组件树
+- 响应式数据更新并不是组件DOM更新，而是执行queueJob(instance.update)，将组件任务加入到队列，数据是立即更改，但组件渲染回延后
+3. 队列的优先级控制
+- 父组件优先级高于子组件，必须先更新父组件，才能更新子组件，因为父组件可能会传参给子组件（作为子组件的属性）。
+- 新加入的job的jobId大于队列最后一个id，则添加在队列尾部，否则利用二分查找添加到正确的位置。
+4. Post 队列的优先级机制
+- mounted、updated 等生命周期，它们有个共同特点，就是需要等 DOM 更新后，再执行
+- watchPostEffect API，用户手动设置 watch 回调在 DOM 更新之后执行
+- 必须要在用户编写的回调函数执行前，把模板引用的值更新
+5. 失效任务
+- 当组件被卸载（unmounted）时，其对应的 Job 会失效，因为不需要再更新该组件了。失效的任务，在取出队列时，不会被执行。
+6. 删除任务
+- 在父组件深度更新完成之后，不需要再重复更新子组件，更新前，需要将组件的 Job 从队列中删除
+7. job递归
+-  Job 在更新组件 DOM 的过程中，依赖的响应式变量发生变化，又调用 queueJob 把自身的 Job 加入到队列中
