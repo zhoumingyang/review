@@ -382,18 +382,19 @@ HTTP/2 通过“多路复用 + 二进制帧 + 头部压缩”等机制，解决�
 | `X-Requested-With` | 常见值 `XMLHttpRequest`，用于区分是 Ajax 请求         |
 | `X-CSRF-Token`     | 防止跨站请求伪造（CSRF）攻击时附带的 token                 |
 
+---
 
 ## 11. 如何通过请求头实现跨域资源共享
 ### 11.1 什么是跨域
 当浏览器发出的请求 协议 + 域名 + 端口 三者任意不同 时，就构成跨域
 ### 11.2 CORS 的核心机制：通过请求头 + 响应头协作实现
-1. 请求头
+#### 请求头
 | 请求头名                             | 作用                                    |
 | -------------------------------- | ------------------------------------- |
 | `Origin`                         | 表示请求来源，浏览器自动添加（如：`http://a.com:8080`） |
 | `Access-Control-Request-Method`  | 预检请求（OPTIONS）中声明实际方法（如 POST）          |
 | `Access-Control-Request-Headers` | 预检中列出将要使用的自定义请求头                      |
-2. 服务端响应头
+#### 服务端响应头
 | 响应头名                               | 作用                               |
 | ---------------------------------- | -------------------------------- |
 | `Access-Control-Allow-Origin`      | ✅ 指定允许的源（如 `http://a.com` 或 `*`） |
@@ -402,5 +403,50 @@ HTTP/2 通过“多路复用 + 二进制帧 + 头部压缩”等机制，解决�
 | `Access-Control-Allow-Credentials` | 是否允许携带 Cookie（需搭配具体域名）           |
 | `Access-Control-Max-Age`           | 预检请求的缓存时间（单位：秒）                  |
 ### 11.3 两类跨域请求：简单请求 vs 预检请求
-1. 简单请求
-2. 预检请求
+1. 简单请求（不会触发 OPTIONS）
+- 方法是 GET、POST、HEAD
+- 请求头仅包含如下几种：Accept, Content-Type, Origin, User-Agent, Referer 等
+- Content-Type 为
+  - application/x-www-form-urlencoded
+  - multipart/form-data
+  - text/plain 
+2. 预检请求（会触发 OPTIONS）
+- 使用 PUT、DELETE 等方法
+- 设置了自定义请求头（如 X-Token、Authorization）
+- Content-Type 为 application/json
+- 则浏览器会先发出一个 OPTIONS 请求，服务端响应后才继续发正式请求。
+- 预检响应204 No Content
+### 关键点
+- 请求头中必须有 Origin，是浏览器自动加的
+- 若有自定义头或 application/json，会触发预检
+- 服务端必须响应 Access-Control-Allow-* 头，告诉浏览器允许跨域
+- 若发送 Cookie，必须同时设置 credentials: include 和 Allow-Credentials: true
+- Access-Control-Allow-Origin 不能为 *，必须是具体的源地址
+
+---
+
+## 12. 讲一下token、session和cookie
+### 12.1 核心定义
+| 项目          | 简述                                              |
+| ----------- | ----------------------------------------------- |
+| **Cookie**  | 浏览器保存的一小段文本数据，自动附带在每次请求中，由服务端或前端设置，用于识别用户       |
+| **Session** | 服务端记录的用户会话状态，通常基于 Cookie 中的 `session_id` 进行查找   |
+| **Token**   | 一段加密字符串，代表用户身份，由前后端约定生成，通常存储在前端（如 localStorage） |
+### 12.2 它们之间的关系
+- 浏览器请求 → 服务端生成 session → 将 session_id 写入 cookie 返回
+- 下次请求 → 浏览器自动携带 cookie → 服务端读取 session_id → 获取 session
+
+- 浏览器请求 → 登录成功 → 服务端生成 token 返回 → 前端保存 token
+- 下次请求 → 前端将 token 放入 Authorization 请求头 → 服务端验证
+### 12.3 三者对比总结表格
+| 对比项     | Cookie             | Session                   | Token                      |
+| ------- | ------------------ | ------------------------- | -------------------------- |
+| 存储位置    | 客户端（浏览器）           | 服务端                       | 客户端（localStorage / Cookie） |
+| 生命周期    | 可设置过期时间            | 通常在服务端内存中，默认临时            | 一般有明确的过期时间                 |
+| 是否自动携带  | ✅ 每次请求自动携带         | ⛔ 不直接携带                   | ⛔ 需手动添加到请求头                |
+| 跨域支持    | ⛔ 默认不支持（需设置 CORS）  | ⛔ 和 cookie 绑定             | ✅ 前端控制，灵活                  |
+| 服务端是否存储 | ⛔ 只在客户端            | ✅ 存储所有会话数据                | ⛔ 不存储，服务端只验证               |
+| 安全性     | 易被拦截（需配合 HttpOnly） | 较安全，但占用服务器内存              | 签名校验，防篡改，可防 CSRF           |
+| 是否支持分布式 | ❌ 单机可行，分布式需共享      | ❌ 分布式时需 Session 共享或 Redis | ✅ 天然支持                     |
+| 典型使用场景  | 用户偏好、自动登录          | 传统服务端登录会话管理               | 前后端分离、移动端、微服务              |
+
