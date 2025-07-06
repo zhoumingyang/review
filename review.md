@@ -41,30 +41,30 @@
 5. 闭包
 6. 如何使用闭包，如何避免内存泄露
 7. 原型链
-8. 原型链继承
-9. instanceof 原理
+8. 继承实现方式
+9.  instanceof的原理
 10. isPrototypeOf 是什么
 11. Object.create(null) 有原型链吗
 12. new是怎么创建实例的
-13. this指向
-14. window对象和document对象分别是什么
-15. 数据类型及判断数据类型方法
-16. typeof 和 instanceof的区别
-17. 为什么箭头函数不能new
-18. 事件监听的时候会有冒泡捕获阶段，在事件触发的时候，他的生命周期是怎么样的
-19. 点一个按钮，它是先经历捕获还是先冒泡
-20. 什么场景下会去监听一个捕获阶段的一个事件，addEventListener默认它就是监听一个冒泡阶段的一个事件是吧
-21. 如何阻止事件默认行为和事件冒泡
-22. 有没有哪些事件不会冒泡
-23. let 和 const 的区别，let、const作用域的底层原理
-24. 如何改变this，call, apply, bind
-25. 引用数据类型和值类型的区别
-26. JS的内存回收机制
-27. setTimeout为什么会不准
-28. defer和async有什么区别
-29. null和undefined的区别
-30. typeof null是什么，为什么
-31. 箭头函数和普通函数的区别
+13. 数据类型及判断数据类型方法
+14. 引用数据类型和值类型的区别
+15. typeof 和 instanceof的区别
+16. null和undefined的区别
+17. typeof null是什么，为什么
+18. 箭头函数和普通函数的区别
+19. 为什么箭头函数不能new
+20. this指向
+21. 何改变this，call, apply, bind
+22. window对象和document对象分别是什么
+23. 事件监听的时候会有冒泡捕获阶段，在事件触发的时候，他的生命周期是怎么样的
+24. 点一个按钮，它是先经历捕获还是先冒泡
+25. 什么场景下会去监听一个捕获阶段的一个事件，addEventListener默认它就是监听一个冒泡阶段的一个事件是吧
+26. 如何阻止事件默认行为和事件冒泡
+27. 有没有哪些事件不会冒泡
+28. let 和 const 的区别，let、const作用域的底层原理
+29. JS的内存回收机制
+30. setTimeout为什么会不准
+31. defer和async有什么区别
 32. async函数中如何捕获错误
 33. fetch是宏任务还是微任务
 34. 对TS泛型的理解

@@ -404,3 +404,229 @@ p
                ↓.__proto__ → Object.prototype
                                ↓.__proto__ → null
 ```
+
+## 8. 继承实现方式
+### 8.1 原型链继承（Prototype Chain）
+#### 实现方式
+```js
+function Parent() {
+  this.colors = ['red', 'green']
+}
+Parent.prototype.sayHi = function () {
+  console.log('Hi')
+}
+
+function Child() {}
+Child.prototype = new Parent()
+
+const c1 = new Child()
+const c2 = new Child()
+```
+- 优点：
+  - 简单、逻辑清晰
+  - 方法复用（共享 prototype 方法）
+- 缺点：
+  - 引用类型属性共享（如数组）
+  - 不能向父构造传参
+### 8.2 借用构造函数继承（Constructor Borrowing）
+#### 实现方式
+``` js
+function Parent(name) {
+  this.name = name
+  this.colors = ['red', 'green']
+}
+
+function Child(name) {
+  Parent.call(this, name) // 关键：在子类构造函数中调用父类
+}
+
+const c1 = new Child('Tom')
+const c2 = new Child('Jerry')
+c1.colors.push('blue')
+console.log(c2.colors) // 不受影响
+```
+- 优点：
+  - 避免引用类型共享问题
+  - 可向父类传参
+- 缺点：
+  - 无法继承原型上的方法（即 prototype 方法）
+### 8.3  组合继承（最经典）
+#### 实现方式
+```js
+function Parent(name) {
+  this.name = name
+  this.colors = ['red', 'green']
+}
+Parent.prototype.sayHi = function () {
+  console.log('Hi')
+}
+
+function Child(name, age) {
+  Parent.call(this, name) // 第一次调用
+  this.age = age
+}
+Child.prototype = new Parent() // 第二次调用
+Child.prototype.constructor = Child
+```
+- 优点：
+  - 既能继承属性，又能继承方法
+  - 实例之间互不影响
+  - 支持传参
+- 缺点：
+  - 父构造函数调用了两次（性能浪费）
+### 8.4 原型式继承（Object.create 的原理）
+#### 实现方式
+```js
+const parent = {
+  name: 'Tom',
+  colors: ['red', 'green']
+}
+
+const child = Object.create(parent)
+```
+- 优点：
+  - 语法简洁
+  - 可快速创建基于原型的对象
+- 缺点：
+  - 引用类型共享问题仍然存在
+  - 无法传参
+### 8.5 寄生式继承
+#### 实现方式
+```js
+function createChild(original) {
+  const clone = Object.create(original)
+  clone.sayHi = function () {
+    console.log('Hi')
+  }
+  return clone
+}
+const parent = { name: 'Tom' }
+const child = createChild(parent)
+```
+- 优点：
+  - 基于原型式继承 + 增强功能
+- 缺点：
+  - 和原型式继承一样存在引用共享问题
+  - 不是真正意义上的“构造函数”继承，无法复用
+### 8.6 寄生组合继承（推荐，最佳实践，ES6的class继承本质）
+#### 实现方式
+```js
+function Parent(name) {
+  this.name = name
+  this.colors = ['red', 'green']
+}
+Parent.prototype.sayHi = function () {
+  console.log('Hi')
+}
+
+function Child(name, age) {
+  Parent.call(this, name) // 只调用一次
+  this.age = age
+}
+Child.prototype = Object.create(Parent.prototype) // 关键：不调用 Parent()
+Child.prototype.constructor = Child
+```
+- 优点：
+  - 不共享引用类型
+  - 支持传参
+  - 继承原型方法
+  - 父构造函数只调用一次
+- 缺点：
+  - 写法稍微复杂一些
+### 8.7 验证class实现寄生组合继承的机制
+```js
+// ES6 class 的原型链结构
+console.log(Child.prototype.__proto__ === Parent.prototype) // true
+console.log(Child.__proto__ === Parent)                     // true
+```
+- 构造函数继承部分：super() → Parent.call(this, ...)
+- 原型链继承部分：Child.prototype = Object.create(Parent.prototype) 
+
+---
+
+## 9. instanceof的原理
+### 9.1 基本语法
+```js
+object instanceof Constructor
+```
+判断 object 的原型链上是否能找到 Constructor.prototype
+### 9.2 instanceof的原理
+```js
+function instanceOf(obj, constructor) {
+  let prototype = constructor.prototype;
+  let proto = Object.getPrototypeOf(obj);
+
+  while (proto) {
+    if (proto === prototype) {
+      return true;
+    }
+    proto = Object.getPrototypeOf(proto);
+  }
+
+  return false;
+}
+```
+### 9.3 对比：instanceof vs typeof vs Object.prototype.toString.call
+| 方法                               | 用途     | 基本类型支持 | 跨 iframe 安全 | 能判断自定义类                      |
+| -------------------------------- | ------ | ------ | ----------- | ---------------------------- |
+| `typeof`                         | 基本类型判断 | ✅      | ✅           | ❌                            |
+| `instanceof`                     | 原型链判断  | ❌（装箱）  | ❌           | ✅                            |
+| `Object.prototype.toString.call` | 精准类型判断 | ✅      | ✅           | 部分支持（靠 `Symbol.toStringTag`） |
+### 9.4 总结
+- instanceof 的原理是判断一个对象的原型链上是否存在目标构造函数的 prototype
+- 它是判断引用类型是否为某个构造函数“实例”的标准方法
+- 在工程实践中要注意 iframe 跨域、修改原型等特殊情况
+- 较复杂场景下可搭配 Object.prototype.toString.call 使用
+
+---
+
+## 10. isPrototypeOf 是什么
+### 10.1 基本语法
+```js
+A.isPrototypeOf(B)
+```
+A是否在对象B的原型链上
+### 10.2 和 instanceof 的区别
+| 特性  | `instanceof`                 | `isPrototypeOf`                            |
+| --- | ---------------------------- | ------------------------------------------ |
+| 语法  | `obj instanceof Constructor` | `Constructor.prototype.isPrototypeOf(obj)` |
+| 本质  | 检查原型链中是否包含构造函数的 prototype    | 检查某个对象是否出现在另一个对象的原型链中                      |
+| 返回  | `true` / `false`             | `true` / `false`                           |
+| 使用者 | 操作符                          | 对象方法                                       |
+### 10.3 内部原理
+```js
+Object.prototype.isPrototypeOf = function (obj) {
+  let proto = Object.getPrototypeOf(obj);
+  while (proto) {
+    if (proto === this) {
+      return true;
+    }
+    proto = Object.getPrototypeOf(proto);
+  }
+  return false;
+}
+```
+
+---
+
+## 11. Object.create(null) 有原型链吗
+Object.create(null) 创建的是一个**“纯净对象”**，它没有继承自 Object.prototype，因此 它没有原型链（[[Prototype]] 为 null）
+### 总结
+| 特性                      | `Object.create(null)`          |
+| ----------------------- | ------------------------------ |
+| `[[Prototype]]`         | `null`（无原型链）                   |
+| 是否继承 `Object.prototype` | ❌ 否                            |
+| `instanceof Object`     | ❌ false                        |
+| 适合场景                    | 创建干净字典，防止原型污染                  |
+| 注意事项                    | 无 `hasOwnProperty()` 等方法，需手动调用 |
+### Object.create(null)、字面量 {} 和 new Object() 这三种创建对象的原型
+| 创建方式                  | 原型链结构（`[[Prototype]]`）               | 是否继承 `Object.prototype` | `instanceof Object` | 备注            |
+| --------------------- | ------------------------------------ | ----------------------- | ------------------- | ------------- |
+| `Object.create(null)` | 直接为 `null`，无原型链                      | 否                       | false               | **无原型链、纯净对象** |
+| `{}`                  | `obj.__proto__ === Object.prototype` | 是                       | true                | 最常用创建方式       |
+| `new Object()`        | `obj.__proto__ === Object.prototype` | 是                       | true                | 与 `{}` 等价     |
+
+
+---
+
+## 12. typeof 和 instanceof的区别
