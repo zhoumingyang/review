@@ -319,7 +319,7 @@ Commit Phase（真实 DOM 操作 + 副作用）
 ```
 ---
 
-## 5. react fiber
+## 5. [react fiber](https://juejin.cn/post/7225957841319379005)
 ### 5.1 总结
 React Fiber 是 React 16 引入的新架构，是一种可中断、可恢复、具备优先级的组件渲染机制，用来替代原先同步递归的 Virtual DOM Diff 实现，是 React 实现异步渲染和并发更新的基础
 ### 5.2 Fiber 是什么
