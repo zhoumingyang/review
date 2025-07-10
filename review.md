@@ -109,20 +109,32 @@
 ## 五、React 框架相关
 详见：[React 相关](./kpoint/react.md)
 1. react类组件和函数组件的区别
-2. react 类组件state
-3. react函数组件有什么特性
-4. react fiber了解多少
-5. React常用的Hooks
-6. useEffect的底层是什么
-7. useRef和useState底层区别
-8. useEffect能监听useRef的值发生改变吗
-9. react可执行中断渲染从底层怎么做到的
-10. React调度怎么做的
-11. useRef，useMemo跟useCallback,优缺点、使用场景
-12. react状态管理的几种方式
-13. react、vue的差别
-14. React组件之间通信了解哪几个
-15. React里面Key的作用是什么
+2. react函数组件有什么特性
+3. react类组件的state
+4. react的底层渲染原理
+5. react fiber是什么
+6. react的任务调度机制是怎么样的，它是实现中断、恢复、优先级控制的
+7. React常用的Hooks
+8. useEffect的底层是什么
+9. useEffect和useLayoutEffect的区别
+10. 为什么useEffect无法获取最新的dom元素
+11. useRef和useState底层区别
+12. useEffect能监听useRef的值发生改变吗
+13. useContext 触发更新的条件
+14. react的useRef和vue3的ref区别
+15. react可执行中断渲染从底层怎么做到的
+16. React调度怎么做的
+17. useRef，useMemo跟useCallback,优缺点、使用场景
+18. react状态管理的几种方式
+19. react、vue的差别
+20. React组件之间通信了解哪几个
+21. React里面Key的作用是什么
+22. useEffect的依赖数组陷阱与执行时机
+23. Hook的调用顺序与闭包问题
+24. 如何在函数组件中模拟类组件生命周期
+25. memo化组件和useCallback 优化传参
+26. 自定义 Hook 的设计原则
+27. 什么是高阶组件
 
 ## 六、工程化相关
 详见：[工程化相关](./kpoint/engineering.md)
