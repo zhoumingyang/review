@@ -119,22 +119,28 @@
 9. useEffect和useLayoutEffect的区别
 10. 为什么useEffect无法获取最新的dom元素
 11. useRef和useState底层区别
-12. useEffect能监听useRef的值发生改变吗
-13. useContext 触发更新的条件
-14. react的useRef和vue3的ref区别
-15. react可执行中断渲染从底层怎么做到的
-16. React调度怎么做的
-17. useRef，useMemo跟useCallback,优缺点、使用场景
-18. react状态管理的几种方式
-19. react、vue的差别
-20. React组件之间通信了解哪几个
-21. React里面Key的作用是什么
-22. useEffect的依赖数组陷阱与执行时机
-23. Hook的调用顺序与闭包问题
-24. 如何在函数组件中模拟类组件生命周期
-25. memo化组件和useCallback 优化传参
-26. 自定义 Hook 的设计原则
-27. 什么是高阶组件
+12. setState的闭包陷阱
+13. useEffect能监听useRef的值发生改变吗
+14. useContext 触发更新的条件
+15. react的useRef和vue3的ref区别
+16. React组件之间通信了解哪几个
+17. react状态管理的几种方式
+18. 自定义 Hook 的设计原则
+19. 如何在函数组件中模拟类组件生命周期
+20. React里面Key的作用是什么
+21. useEffect的依赖数组陷阱与执行时机
+22. react可执行中断渲染从底层怎么做到的
+23. React调度怎么做的
+24. useRef，useMemo跟useCallback,优缺点、使用场景
+25. react、vue的差别
+26. Hook的调用顺序与闭包问题
+27. memo化组件和useCallback 优化传参
+28. 什么是高阶组件
+29. react项目中绑定事件是在元素本身吗
+30. react和react-dom这两个库之间有什么不同，能不能只引一个
+31. react中为什么要有虚拟DOM，虚拟DOM一定比修改真实DOM快吗
+32. fiber架构主要是为了解决什么问题，可中断渲染具体是怎么实现的
+33. 时间分片具体的机制是什么，如何确定分片执行的时间，时间分片的实现是react自研的还是用了浏览器的API，为什么不用requestIdleCallback
 
 ## 六、工程化相关
 详见：[工程化相关](./kpoint/engineering.md)
